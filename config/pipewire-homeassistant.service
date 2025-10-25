@@ -1,0 +1,21 @@
+[Unit]
+Description=PipeWire to Home Assistant Media Player Bridge
+After=pipewire.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/share/pipewire-homeassistant/venv/bin/python %h/.local/share/pipewire-homeassistant/src/main.py
+WorkingDirectory=%h/.local/share/pipewire-homeassistant/src
+Restart=on-failure
+RestartSec=10
+
+# Environment
+Environment="PYTHONUNBUFFERED=1"
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
