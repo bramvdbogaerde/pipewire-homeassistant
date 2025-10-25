@@ -53,7 +53,8 @@ class HomeAssistantClient:
     def _update_media_player_state(self):
         """Update the media_player state in Home Assistant."""
         state = "playing" if self.active_streams else "idle"
-        entity_id = f"media_player.pipewire_{self.device_name.lower().replace('-', '_')}"
+        device_name_normalized = self.device_name.lower().replace('-', '_').replace(' ', '_')
+        entity_id = f"media_player.pipewire_{device_name_normalized}"
 
         # Get application names
         app_names = list(self.active_streams.values())
@@ -64,7 +65,9 @@ class HomeAssistantClient:
             'supported_features': 0,  # Read-only media player
             'app_name': app_names[0] if app_names else None,
             'active_streams': len(self.active_streams),
-            'applications': app_names
+            'applications': app_names,
+            'entity_id': entity_id,
+            'unique_id': f'pipewire_{device_name_normalized}',
         }
 
         self.update_state(entity_id=entity_id, state=state, attributes=attributes)
